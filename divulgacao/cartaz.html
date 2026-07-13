@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartaz — Catálogo de Materiais</title>
+<style>
+  @page{ size:A4 portrait; margin:0 }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color:#1c2b23; background:#fff;
+    width:210mm; min-height:297mm; margin:0 auto;
+    display:flex; flex-direction:column;
+  }
+  header{
+    background:#095e30; color:#fff; text-align:center;
+    padding:14mm 10mm 10mm;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  header .emoji{font-size:34pt}
+  header h1{font-size:30pt; letter-spacing:.5pt; margin-top:2mm}
+  header .sub{font-size:13pt; opacity:.92; margin-top:2mm}
+  main{flex:1; display:flex; flex-direction:column; align-items:center; padding:10mm}
+  .chamada{font-size:15pt; text-align:center; max-width:150mm; line-height:1.5}
+  .chamada b{color:#095e30}
+  #qr{margin:8mm 0 4mm}
+  #qr svg{width:88mm; height:88mm}
+  .url{
+    font-family:ui-monospace,Consolas,monospace; font-size:13.5pt;
+    background:#ecf4ee; border:1px solid #d9e3dc; border-radius:4mm;
+    padding:3mm 6mm; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .passos{margin-top:9mm; width:170mm}
+  .passo{display:flex; align-items:flex-start; gap:5mm; margin-bottom:5mm}
+  .passo .num{
+    background:#0b7a3e; color:#fff; border-radius:50%;
+    width:11mm; height:11mm; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15pt; font-weight:700;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .passo .txt{font-size:14pt; line-height:1.45; padding-top:1mm}
+  .passo .txt small{display:block; color:#5c6f64; font-size:10.5pt}
+  footer{
+    background:#ecf4ee; color:#3c5245; text-align:center;
+    padding:6mm 10mm; font-size:11pt;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="emoji">📦</div>
+    <h1>Catálogo de Materiais</h1>
+    <div class="sub">Códigos SAP · Referências cruzadas · Fotos · Localização no almoxarifado</div>
+  </header>
+
+  <main>
+    <p class="chamada">
+      Precisa do <b>código SAP</b> de um material? Tem uma referência anotada e
+      quer saber o equivalente? Agora está tudo no celular — <b>aponte a câmera
+      para o código abaixo:</b>
+    </p>
+
+    <div id="qr"></div>
+    <div class="url">jefferson-montagnhani.github.io/Catalogo</div>
+
+    <div class="passos">
+      <div class="passo">
+        <div class="num">1</div>
+        <div class="txt">Abra o link e toque em <b>“Criar conta”</b>
+          <small>use seu e-mail e crie uma senha (mínimo 6 caracteres)</small>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="num">2</div>
+        <div class="txt">Avise o <b>Jefferson</b> para liberar seu acesso
+          <small>a conta nova fica “aguardando aprovação” até um administrador aprovar</small>
+        </div>
+      </div>
+      <div class="passo">
+        <div class="num">3</div>
+        <div class="txt">No navegador, use <b>“Adicionar à tela inicial”</b>
+          <small>o catálogo vira um aplicativo no seu celular</small>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Achou um material sem código ou com informação errada? Cadastre ou corrija
+    direto no app — o catálogo é da equipe. 💪
+  </footer>
+
+  <script src="../js/vendor/qrcode.js"></script>
+  <script>
+    const qr = qrcode(0, 'M');
+    qr.addData('https://jefferson-montagnhani.github.io/Catalogo/');
+    qr.make();
+    document.getElementById('qr').innerHTML =
+      qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  </script>
+</body>
+</html>
