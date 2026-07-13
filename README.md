@@ -25,13 +25,14 @@ hoje estão espalhados em cadernos, grupos de WhatsApp e catálogos físicos/onl
 ## Como usar
 
 O sistema é um site estático (`index.html` + `css/` + `js/`) que conversa com a
-base no Supabase. Para a equipe usar no celular, publique no GitHub Pages:
+base no Supabase, publicado automaticamente no GitHub Pages:
 
-1. Neste repositório, vá em **Settings → Pages**.
-2. Em *Source*, escolha **Deploy from a branch**, selecione a branch principal
-   e a pasta `/ (root)`.
-3. Em ~1 minuto o sistema estará em `https://SEU-USUARIO.github.io/Catalogo/` —
-   salve na tela inicial do celular e use como aplicativo.
+**https://jefferson-montagnhani.github.io/Catalogo/**
+
+Salve esse endereço na tela inicial do celular e use como aplicativo. Todo
+push na branch `main` republica o site sozinho (workflow em
+`.github/workflows/pages.yml`). Se precisar republicar manualmente: aba
+*Actions* → “Publicar no GitHub Pages” → *Run workflow*.
 
 > ⚠️ O **leitor de câmera só funciona em HTTPS** (o GitHub Pages já é HTTPS).
 > Abrir o `index.html` direto do arquivo funciona para buscar/cadastrar, mas a
