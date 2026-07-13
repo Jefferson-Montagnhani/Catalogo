@@ -1,49 +1,79 @@
 # Catálogo de Materiais — Códigos SAP e Referências Cruzadas
 
-Sistema para concentrar em um só lugar os códigos SAP internos, referências de
-fabricantes e localizações de materiais que hoje estão espalhados em cadernos,
-grupos de WhatsApp e catálogos físicos/online.
+Sistema **compartilhado pela equipe** para concentrar em um só lugar os códigos
+SAP internos, referências de fabricantes, fotos e localizações de materiais que
+hoje estão espalhados em cadernos, grupos de WhatsApp e catálogos físicos/online.
 
-## Como usar o sistema
+**O que ele faz:**
 
-Todo o sistema está em um único arquivo: **`index.html`**. Não precisa
-instalar nada — funciona offline, no PC e no celular.
+- 🔍 **Busca inteligente** — por código SAP, referência de fabricante, descrição
+  ou equipamento; ignora acentos e pontuação (`W9507` encontra `W950/7`).
+- ☁️ **Base compartilhada na nuvem** (Supabase) — todo mundo vê o mesmo catálogo,
+  com atualização **em tempo real** entre os aparelhos.
+- 🔐 **Login com aprovação** — colegas criam conta e um administrador aprova o
+  acesso na aba *Equipe*.
+- 📷 **Fotos dos materiais** — tire foto pelo celular na hora do cadastro
+  (comprimidas automaticamente).
+- 📱 **Leitor de código de barras/QR** — escaneie a etiqueta da prateleira para
+  achar o material ou preencher o código SAP no cadastro.
+- 🏷️ **Impressão de etiquetas QR** — gere etiquetas com QR + código SAP +
+  descrição + localização para colar nas prateleiras.
+- 📥📤 **Importação/exportação CSV** (Excel) e backup JSON.
+- 📡 **Modo offline de leitura** — sem internet, mostra a última cópia salva no
+  aparelho.
 
-**Opção 1 — abrir direto no computador**
-1. Baixe o arquivo `index.html` (botão *Code → Download ZIP* aqui no GitHub).
-2. Dê dois cliques no arquivo — ele abre no navegador e já está funcionando.
+## Como usar
 
-**Opção 2 — publicar no GitHub Pages (recomendado para usar no celular)**
-1. Neste repositório, vá em *Settings → Pages*.
-2. Em *Source*, escolha *Deploy from a branch*, selecione a branch principal e a pasta `/ (root)`.
-3. Em ~1 minuto o sistema fica disponível em `https://SEU-USUARIO.github.io/Catalogo/` —
-   salve o endereço na tela inicial do celular e use como um aplicativo.
+O sistema é um site estático (`index.html` + `css/` + `js/`) que conversa com a
+base no Supabase. Para a equipe usar no celular, publique no GitHub Pages:
 
-### O que dá para fazer
+1. Neste repositório, vá em **Settings → Pages**.
+2. Em *Source*, escolha **Deploy from a branch**, selecione a branch principal
+   e a pasta `/ (root)`.
+3. Em ~1 minuto o sistema estará em `https://SEU-USUARIO.github.io/Catalogo/` —
+   salve na tela inicial do celular e use como aplicativo.
 
-- **Cadastrar** materiais com: código SAP, descrição, fabricante, categoria,
-  unidade, **referências/códigos equivalentes** (quantos quiser), aplicação/
-  equipamento, localização no almoxarifado e observações.
-- **Buscar** por qualquer coisa: código SAP, referência de fabricante,
-  descrição, equipamento… A busca ignora acentos e pontuação — pesquisar
-  `W9507` encontra a referência `W950/7`.
-- **Copiar o código SAP** com um clique para colar direto no SAP.
-- **Importar CSV** vindo do Excel/Google Planilhas ou do raspador (abaixo).
-  Materiais com o mesmo código SAP são atualizados e as referências são somadas.
-- **Exportar CSV** (abre no Excel) e **backup JSON** completo.
+> ⚠️ O **leitor de câmera só funciona em HTTPS** (o GitHub Pages já é HTTPS).
+> Abrir o `index.html` direto do arquivo funciona para buscar/cadastrar, mas a
+> câmera fica bloqueada pelo navegador.
 
-### ⚠️ Importante: onde os dados ficam
+### Primeiro acesso
 
-Os dados ficam salvos **no navegador do aparelho em que você cadastrou**
-(localStorage). Isso significa:
+- **Jefferson**: sua conta `jeffersonpm16@gmail.com` já está criada como
+  **administrador aprovado** (é a mesma senha que você já usa nos apps deste
+  projeto Supabase; se não lembrar, use “Esqueci minha senha”).
+- **Colegas**: clicam em **Criar conta** na tela de entrada. A conta nasce
+  “pendente” — um admin aprova na aba **👥 Equipe** (o botão fica com um aviso
+  vermelho quando há gente esperando).
 
-- Não precisa de internet nem de servidor — mas cada aparelho tem sua própria base.
-- **Exporte um backup JSON com frequência** (aba *Importar / Exportar*).
-- Para passar os dados para outro aparelho ou colega, exporte o JSON/CSV e
-  importe lá. Se no futuro vocês quiserem uma base única compartilhada pela
-  equipe, dá para evoluir o sistema para um banco de dados central.
+### Configuração recomendada no painel do Supabase (uma vez só)
 
-### Formato do CSV de importação
+No [painel do Supabase](https://supabase.com/dashboard), projeto **Rastrear**:
+
+1. **Authentication → URL Configuration → Site URL**: coloque a URL do GitHub
+   Pages (ex.: `https://seu-usuario.github.io/Catalogo/`). Isso faz os links de
+   confirmação de e-mail e recuperação de senha voltarem para o app.
+2. *(Opcional)* **Authentication → Sign In / Up → Leaked password protection**:
+   ative para bloquear senhas vazadas conhecidas.
+
+## Onde os dados ficam
+
+| O quê | Onde |
+|---|---|
+| Materiais e equipe | Projeto Supabase **Rastrear** (`hiukokgrsbvmpimtvbwg`), tabelas `cat_materiais` e `cat_perfis` |
+| Fotos | Bucket `fotos-materiais` do mesmo projeto |
+| Cópia offline | `localStorage` do navegador (somente leitura) |
+
+O catálogo convive com as tabelas do app Rastrear no mesmo projeto (o plano
+gratuito permite 2 projetos ativos e ambos já estavam em uso). Tudo do catálogo
+usa o prefixo `cat_` — nada do outro app foi alterado. A segurança é feita por
+RLS: só usuários **aprovados** leem/gravam materiais; só **admins** gerenciam a
+equipe.
+
+**Backups**: além de o Supabase guardar os dados, exporte de vez em quando um
+CSV/JSON na aba **⇅ Dados**.
+
+## Formato do CSV de importação
 
 Cabeçalho reconhecido (a ordem não importa; use `;` ou `,` como separador):
 
@@ -52,57 +82,61 @@ codigo_sap;descricao;fabricante;categoria;unidade;referencias;aplicacao;localiza
 ```
 
 As referências vão em uma única coluna, separadas por `;` dentro de aspas —
-veja o exemplo pronto em [`exemplos/materiais_exemplo.csv`](exemplos/materiais_exemplo.csv).
+exemplo pronto em [`exemplos/materiais_exemplo.csv`](exemplos/materiais_exemplo.csv).
+Materiais com o mesmo código SAP são atualizados (referências somadas); os
+demais são adicionados.
 
 ## Raspador do Catálogo Expresso (Original Filter)
 
 O script [`scraper/scrape_catalogoexpresso.py`](scraper/scrape_catalogoexpresso.py)
 baixa do site catalogoexpresso.com.br os filtros por montadora/modelo com as
-**referências cruzadas**, e gera um CSV já no formato de importação do sistema.
+**referências cruzadas** e gera um CSV já no formato de importação do sistema.
 
-> **Nota:** o ambiente onde este projeto foi gerado bloqueia acesso a esse
+> **Nota:** o ambiente onde este projeto foi gerado bloqueia o acesso a esse
 > site (política de rede), então o script foi escrito a partir da estrutura
-> pública de URLs da plataforma, mas precisa ser rodado **no seu computador**.
-> Se algo não bater, rode o modo `inspect` (abaixo) e me mande a saída que eu ajusto.
-
-### Como rodar (no seu PC, com Python 3 instalado)
+> pública de URLs da plataforma e precisa ser rodado **no seu computador**.
+> Se algo não bater, rode o modo `inspect` e me mande a saída que eu ajusto.
 
 ```bash
 cd scraper
 pip install -r requirements.txt
 
-# 1) Explorar a estrutura do site (formulários, filtros disponíveis)
+# explorar a estrutura do site (formulários e filtros disponíveis)
 python3 scrape_catalogoexpresso.py inspect
 
-# 2) Listar os produtos de uma montadora
+# listar os produtos de uma montadora
 python3 scrape_catalogoexpresso.py buscar --fabricante VOLKSWAGEN
 
-# 3) Ver as referências cruzadas de um produto específico
+# referências cruzadas de um produto específico
 python3 scrape_catalogoexpresso.py produto --id 1118
 
-# 4) Gerar o CSV completo (busca + detalhes de cada produto)
+# gerar o CSV completo e importar na aba “⇅ Dados” do sistema
 python3 scrape_catalogoexpresso.py tudo --fabricante VOLKSWAGEN --csv filtros_vw.csv
 ```
 
-Depois é só importar o CSV gerado na aba **⇅ Importar / Exportar** do sistema
-e preencher os códigos SAP internos de cada item.
-
-O script espera 1,5 s entre requisições por padrão (`--delay` para ajustar) —
-mantenha um ritmo educado e confira os termos de uso do site antes de
-raspagens em massa.
+O script espera 1,5 s entre requisições (`--delay` para ajustar) — mantenha um
+ritmo educado e confira os termos de uso do site antes de raspagens em massa.
 
 ## Estrutura do repositório
 
 ```
-index.html                        ← o sistema completo (abra no navegador)
-exemplos/materiais_exemplo.csv    ← modelo de planilha para importação
-scraper/scrape_catalogoexpresso.py← raspador do Catálogo Expresso
-scraper/requirements.txt          ← dependências do raspador
+index.html                          ← telas (login, app, scanner, etiquetas)
+css/estilo.css                      ← visual (claro/escuro) + layout de impressão
+js/app.js                           ← lógica do aplicativo
+js/config.js                        ← URL e chave pública do Supabase
+js/vendor/supabase.js               ← cliente Supabase (local, sem CDN)
+js/vendor/html5-qrcode.min.js       ← leitor de código de barras (fallback)
+js/vendor/qrcode.js                 ← gerador de QR para as etiquetas
+exemplos/materiais_exemplo.csv      ← modelo de planilha para importação
+scraper/scrape_catalogoexpresso.py  ← raspador do Catálogo Expresso
 ```
+
+As chaves em `js/config.js` são **públicas por design** (chave *publishable* do
+Supabase) — a segurança vem das regras RLS no banco, não do sigilo da chave.
 
 ## Ideias para o futuro
 
-- Base compartilhada entre vários usuários (banco de dados central).
-- Fotos dos materiais.
-- Leitura de código de barras/QR na etiqueta da prateleira.
+- Controle de estoque (quantidade em prateleira, mínimo, alertas).
+- Histórico de quem alterou o quê.
+- Solicitações de compra direto pelo app.
 - Importadores para outros catálogos online que a equipe usa.

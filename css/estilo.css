@@ -1,0 +1,293 @@
+:root{
+  --bg:#f3f6f4; --card:#ffffff; --texto:#1c2b23; --muted:#5c6f64;
+  --accent:#0b7a3e; --accent-forte:#095e30; --borda:#d9e3dc; --chip:#ecf4ee;
+  --perigo:#b3261e; --aviso:#8a6d00; --aviso-bg:#fff7d6;
+  --sombra:0 1px 3px rgba(0,0,0,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101613; --card:#19221d; --texto:#e6efe9; --muted:#96aa9d;
+    --accent:#3fbf75; --accent-forte:#2f9c5d; --borda:#2b382f; --chip:#223028;
+    --perigo:#ff6f65; --aviso:#ffd866; --aviso-bg:#332f1a;
+    --sombra:0 1px 3px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--texto);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:16px; line-height:1.45;
+}
+button{font-family:inherit}
+
+/* ================= telas ================= */
+.tela{display:none}
+.tela.ativa{display:block}
+
+/* ---------- login ---------- */
+#tela-login.ativa,#tela-pendente.ativa,#tela-carregando.ativa{
+  display:flex; min-height:100vh; align-items:center; justify-content:center; padding:20px;
+}
+.cartao-login{
+  background:var(--card); border:1px solid var(--borda); border-radius:14px;
+  box-shadow:var(--sombra); padding:28px 26px; width:100%; max-width:400px;
+}
+.cartao-login h1{margin:0 0 2px; font-size:1.3rem; color:var(--accent)}
+.cartao-login .sub{color:var(--muted); font-size:.85rem; margin-bottom:18px}
+.cartao-login form{display:flex; flex-direction:column; gap:10px}
+.cartao-login label{font-size:.8rem; color:var(--muted); font-weight:600}
+.cartao-login input{
+  padding:11px; border:1px solid var(--borda); border-radius:9px;
+  background:var(--bg); color:var(--texto); font-size:.95rem; width:100%;
+}
+.cartao-login input:focus{outline:2px solid var(--accent); outline-offset:1px}
+.login-msg{font-size:.85rem; min-height:1.2em; margin:4px 0}
+.login-msg.erro{color:var(--perigo)}
+.login-msg.ok{color:var(--accent)}
+.login-links{display:flex; justify-content:space-between; margin-top:10px; font-size:.83rem}
+.login-links a{color:var(--accent); cursor:pointer; text-decoration:none}
+.login-links a:hover{text-decoration:underline}
+
+/* ---------- app ---------- */
+header.topo{
+  background:var(--accent-forte); color:#fff; padding:12px 16px;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+header.topo h1{margin:0; font-size:1.15rem; letter-spacing:.3px}
+header.topo .sub{opacity:.85; font-size:.78rem}
+.usuario{margin-left:auto; display:flex; align-items:center; gap:8px; font-size:.82rem}
+.usuario .quem{opacity:.9; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.usuario button{
+  background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.35);
+  color:#fff; border-radius:8px; padding:5px 12px; cursor:pointer; font-size:.8rem;
+}
+.usuario button:hover{background:rgba(255,255,255,.25)}
+
+#banner-offline{
+  background:var(--aviso-bg); color:var(--aviso); font-size:.85rem;
+  padding:8px 16px; text-align:center; border-bottom:1px solid var(--borda);
+}
+
+nav.tabs{
+  display:flex; gap:6px; padding:10px 16px 0;
+  max-width:1100px; margin:0 auto; flex-wrap:wrap;
+}
+nav.tabs button{
+  border:1px solid var(--borda); border-bottom:none;
+  background:var(--card); color:var(--muted);
+  padding:9px 16px; border-radius:10px 10px 0 0;
+  font-size:.95rem; cursor:pointer; position:relative;
+}
+nav.tabs button.ativa{color:var(--texto); font-weight:600; border-color:var(--accent)}
+nav.tabs .badge-num{
+  background:var(--perigo); color:#fff; border-radius:999px;
+  font-size:.68rem; padding:1px 6px; margin-left:5px;
+}
+main{max-width:1100px; margin:0 auto; padding:14px 16px 70px}
+section.painel{display:none}
+section.painel.ativa{display:block}
+
+/* ------ busca ------ */
+.barra-busca{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px}
+.barra-busca input[type=search]{
+  flex:1 1 240px; padding:12px 14px; font-size:1.05rem;
+  border:2px solid var(--accent); border-radius:10px;
+  background:var(--card); color:var(--texto);
+}
+.barra-busca input:focus{outline:2px solid var(--accent); outline-offset:1px}
+.barra-busca select{
+  padding:10px; border:1px solid var(--borda); border-radius:10px;
+  background:var(--card); color:var(--texto); max-width:190px;
+}
+.barra-busca .btn-icone{
+  border:1px solid var(--borda); background:var(--card); color:var(--texto);
+  border-radius:10px; padding:0 14px; font-size:1rem; cursor:pointer;
+}
+.barra-busca .btn-icone:hover{border-color:var(--accent)}
+.contagem{color:var(--muted); font-size:.88rem; margin:6px 2px 12px}
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:12px}
+.card{
+  background:var(--card); border:1px solid var(--borda); border-radius:12px;
+  padding:12px 14px; box-shadow:var(--sombra);
+  display:flex; flex-direction:column; gap:6px;
+}
+.card-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.sap{
+  font-family:ui-monospace,Consolas,monospace; font-size:1.15rem; font-weight:700;
+  color:var(--accent);
+}
+.sap.vazio{color:var(--muted); font-weight:400; font-size:.9rem; font-style:italic}
+.badge{
+  background:var(--chip); border:1px solid var(--borda); color:var(--muted);
+  border-radius:999px; padding:1px 10px; font-size:.75rem; margin-left:auto;
+}
+.desc{font-weight:600}
+.meta,.linha{font-size:.86rem; color:var(--muted)}
+.linha b{color:var(--texto); font-weight:600}
+.refs{display:flex; flex-wrap:wrap; gap:5px}
+.chip{
+  background:var(--chip); border:1px solid var(--borda);
+  border-radius:7px; padding:2px 8px; font-size:.8rem;
+  font-family:ui-monospace,Consolas,monospace;
+}
+.fotos-card{display:flex; gap:6px; flex-wrap:wrap}
+.fotos-card img{
+  width:56px; height:56px; object-fit:cover; border-radius:8px;
+  border:1px solid var(--borda); cursor:zoom-in;
+}
+.acoes{display:flex; gap:8px; margin-top:4px}
+.acoes button, .copy{
+  border:1px solid var(--borda); background:transparent; color:var(--muted);
+  border-radius:8px; padding:4px 10px; font-size:.82rem; cursor:pointer;
+}
+.acoes button:hover,.copy:hover{border-color:var(--accent); color:var(--accent)}
+.acoes button.excluir:hover{border-color:var(--perigo); color:var(--perigo)}
+.vazio-msg{text-align:center; color:var(--muted); padding:50px 10px; font-size:.95rem}
+.mais{display:block; margin:16px auto; padding:10px 22px}
+.mais[hidden]{display:none}
+
+/* ------ formulário ------ */
+form.cadastro{
+  background:var(--card); border:1px solid var(--borda); border-radius:12px;
+  padding:16px; display:grid; gap:12px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+}
+form.cadastro .campo{display:flex; flex-direction:column; gap:4px}
+form.cadastro .campo.largo{grid-column:1/-1}
+form.cadastro label{font-size:.82rem; color:var(--muted); font-weight:600}
+form.cadastro input, form.cadastro textarea{
+  padding:10px; border:1px solid var(--borda); border-radius:8px;
+  background:var(--bg); color:var(--texto); font-size:.95rem; font-family:inherit;
+}
+form.cadastro textarea{resize:vertical; min-height:64px}
+form.cadastro input:focus, form.cadastro textarea:focus{outline:2px solid var(--accent); outline-offset:1px}
+.campo-sap{display:flex; gap:6px}
+.campo-sap input{flex:1}
+.campo-sap .btn-icone{
+  border:1px solid var(--borda); background:var(--bg); border-radius:8px;
+  padding:0 12px; cursor:pointer; font-size:1rem; color:var(--texto);
+}
+.campo-sap .btn-icone:hover{border-color:var(--accent)}
+.form-acoes{grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap}
+.btn{
+  padding:11px 22px; border-radius:10px; border:none; cursor:pointer;
+  font-size:.95rem; font-weight:600;
+}
+.btn.principal{background:var(--accent); color:#fff}
+.btn.principal:hover{background:var(--accent-forte)}
+.btn.principal:disabled{opacity:.6; cursor:wait}
+.btn.secundario{background:transparent; color:var(--muted); border:1px solid var(--borda)}
+.btn.perigo{background:transparent; color:var(--perigo); border:1px solid var(--perigo)}
+.dica{grid-column:1/-1; font-size:.8rem; color:var(--muted)}
+
+/* fotos no formulário */
+.fotos-form{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.fotos-form .foto-prev{position:relative}
+.fotos-form img{
+  width:72px; height:72px; object-fit:cover; border-radius:10px;
+  border:1px solid var(--borda);
+}
+.fotos-form .rm-foto{
+  position:absolute; top:-7px; right:-7px; width:22px; height:22px;
+  border-radius:50%; border:none; background:var(--perigo); color:#fff;
+  font-size:.75rem; cursor:pointer; line-height:1;
+}
+.btn-add-foto{
+  width:72px; height:72px; border:2px dashed var(--borda); border-radius:10px;
+  background:transparent; color:var(--muted); font-size:.72rem; cursor:pointer;
+}
+.btn-add-foto:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ------ blocos (dados / equipe) ------ */
+.bloco{
+  background:var(--card); border:1px solid var(--borda); border-radius:12px;
+  padding:16px; margin-bottom:14px;
+}
+.bloco h3{margin:0 0 6px; font-size:1rem}
+.bloco p{margin:4px 0 12px; font-size:.87rem; color:var(--muted)}
+.bloco code{background:var(--chip); padding:1px 6px; border-radius:5px; font-size:.8rem}
+
+/* equipe */
+.tabela-equipe{width:100%; border-collapse:collapse; font-size:.9rem}
+.tabela-equipe th,.tabela-equipe td{
+  text-align:left; padding:9px 8px; border-bottom:1px solid var(--borda);
+}
+.tabela-equipe th{color:var(--muted); font-size:.78rem; text-transform:uppercase}
+.tabela-equipe .pendente{color:var(--aviso); font-weight:600}
+.tabela-equipe .aprovado{color:var(--accent); font-weight:600}
+.tabela-equipe button{
+  border:1px solid var(--borda); background:transparent; color:var(--texto);
+  border-radius:7px; padding:4px 10px; font-size:.78rem; cursor:pointer; margin:2px;
+}
+.tabela-equipe button:hover{border-color:var(--accent)}
+@media (max-width:640px){
+  .tabela-equipe th:nth-child(4),.tabela-equipe td:nth-child(4){display:none}
+}
+
+/* ================= modal / scanner ================= */
+.modal{
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:40;
+  display:flex; align-items:center; justify-content:center; padding:14px;
+}
+.modal[hidden]{display:none}
+.modal-caixa{
+  background:var(--card); border-radius:14px; width:100%; max-width:480px;
+  padding:14px; box-shadow:0 8px 30px rgba(0,0,0,.4);
+}
+.modal-cab{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
+.modal-cab button{
+  border:none; background:transparent; color:var(--muted); font-size:1.2rem; cursor:pointer;
+}
+.scanner-status{font-size:.85rem; color:var(--muted); margin-bottom:8px; min-height:1.2em}
+#scanner-video,#leitor-h5{width:100%; border-radius:10px; overflow:hidden; background:#000}
+#scanner-video{max-height:60vh}
+
+/* lightbox */
+#lightbox{
+  position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:50;
+  display:flex; align-items:center; justify-content:center;
+}
+#lightbox[hidden]{display:none}
+#lightbox img{max-width:92vw; max-height:88vh; border-radius:8px}
+#lightbox button{
+  position:absolute; border:none; background:rgba(255,255,255,.12); color:#fff;
+  font-size:1.6rem; cursor:pointer; border-radius:50%; width:46px; height:46px;
+}
+#lb-fechar{top:14px; right:14px}
+#lb-ant{left:10px; top:50%; transform:translateY(-50%)}
+#lb-prox{right:10px; top:50%; transform:translateY(-50%)}
+
+/* ================= rodapé / toast ================= */
+footer#rodape{
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--card); border-top:1px solid var(--borda);
+  padding:8px 16px; font-size:.8rem; color:var(--muted); text-align:center; z-index:5;
+}
+#toast{
+  position:fixed; bottom:56px; left:50%; transform:translateX(-50%);
+  background:var(--texto); color:var(--bg); padding:10px 20px;
+  border-radius:10px; font-size:.9rem; box-shadow:var(--sombra);
+  opacity:0; pointer-events:none; transition:opacity .25s; z-index:60;
+  max-width:90vw;
+}
+#toast.mostrar{opacity:1}
+#toast.erro{background:var(--perigo); color:#fff}
+
+/* ================= impressão de etiquetas ================= */
+#area-impressao{display:none}
+@media print{
+  body.imprimindo > *:not(#area-impressao){display:none !important}
+  body.imprimindo #area-impressao{
+    display:grid !important; grid-template-columns:repeat(3,1fr); gap:4mm;
+  }
+  .etiqueta{
+    border:1px dashed #999; padding:3mm; display:flex; gap:3mm; align-items:center;
+    break-inside:avoid; -webkit-print-color-adjust:exact;
+  }
+  .etiqueta svg{width:22mm; height:22mm; flex-shrink:0}
+  .et-info{min-width:0}
+  .et-sap{font-family:ui-monospace,Consolas,monospace; font-weight:700; font-size:12pt}
+  .et-desc{font-size:7.5pt; line-height:1.25}
+  .et-loc{font-size:7pt; color:#444; margin-top:1mm}
+}
