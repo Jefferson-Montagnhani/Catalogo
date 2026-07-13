@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo de Materiais · SAP</title>
+<style>
+  :root{
+    --bg:#f3f6f4; --card:#ffffff; --texto:#1c2b23; --muted:#5c6f64;
+    --accent:#0b7a3e; --accent-forte:#095e30; --borda:#d9e3dc; --chip:#ecf4ee;
+    --perigo:#b3261e; --sombra:0 1px 3px rgba(0,0,0,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#101613; --card:#19221d; --texto:#e6efe9; --muted:#96aa9d;
+      --accent:#3fbf75; --accent-forte:#2f9c5d; --borda:#2b382f; --chip:#223028;
+      --perigo:#ff6f65; --sombra:0 1px 3px rgba(0,0,0,.4);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--texto);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    font-size:16px; line-height:1.45;
+  }
+  header{
+    background:var(--accent-forte); color:#fff;
+    padding:14px 16px;
+  }
+  header h1{margin:0;font-size:1.25rem;letter-spacing:.3px}
+  header .sub{opacity:.85;font-size:.82rem}
+  nav.tabs{
+    display:flex; gap:6px; padding:10px 16px 0;
+    max-width:1100px; margin:0 auto;
+  }
+  nav.tabs button{
+    border:1px solid var(--borda); border-bottom:none;
+    background:var(--card); color:var(--muted);
+    padding:9px 16px; border-radius:10px 10px 0 0;
+    font-size:.95rem; cursor:pointer;
+  }
+  nav.tabs button.ativa{color:var(--texto); font-weight:600; border-color:var(--accent)}
+  main{max-width:1100px; margin:0 auto; padding:14px 16px 60px}
+  section.painel{display:none}
+  section.painel.ativa{display:block}
+
+  /* ------ busca ------ */
+  .barra-busca{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px}
+  .barra-busca input[type=search]{
+    flex:1 1 260px; padding:12px 14px; font-size:1.05rem;
+    border:2px solid var(--accent); border-radius:10px;
+    background:var(--card); color:var(--texto);
+  }
+  .barra-busca select{
+    padding:10px; border:1px solid var(--borda); border-radius:10px;
+    background:var(--card); color:var(--texto); max-width:200px;
+  }
+  .contagem{color:var(--muted); font-size:.88rem; margin:6px 2px 12px}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:12px}
+  .card{
+    background:var(--card); border:1px solid var(--borda); border-radius:12px;
+    padding:12px 14px; box-shadow:var(--sombra);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .card-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .sap{
+    font-family:ui-monospace,Consolas,monospace; font-size:1.15rem; font-weight:700;
+    color:var(--accent);
+  }
+  .sap.vazio{color:var(--muted); font-weight:400; font-size:.9rem; font-style:italic}
+  .badge{
+    background:var(--chip); border:1px solid var(--borda); color:var(--muted);
+    border-radius:999px; padding:1px 10px; font-size:.75rem; margin-left:auto;
+  }
+  .desc{font-weight:600}
+  .meta,.linha{font-size:.86rem; color:var(--muted)}
+  .linha b{color:var(--texto); font-weight:600}
+  .refs{display:flex; flex-wrap:wrap; gap:5px}
+  .chip{
+    background:var(--chip); border:1px solid var(--borda);
+    border-radius:7px; padding:2px 8px; font-size:.8rem;
+    font-family:ui-monospace,Consolas,monospace;
+  }
+  .acoes{display:flex; gap:8px; margin-top:4px}
+  .acoes button, .copy{
+    border:1px solid var(--borda); background:transparent; color:var(--muted);
+    border-radius:8px; padding:4px 10px; font-size:.82rem; cursor:pointer;
+  }
+  .acoes button:hover,.copy:hover{border-color:var(--accent); color:var(--accent)}
+  .acoes button.excluir:hover{border-color:var(--perigo); color:var(--perigo)}
+  .vazio-msg{
+    text-align:center; color:var(--muted); padding:50px 10px; font-size:.95rem;
+  }
+  .mais{display:block; margin:16px auto; padding:10px 22px}
+  .mais[hidden]{display:none}
+
+  /* ------ formulário ------ */
+  form.cadastro{
+    background:var(--card); border:1px solid var(--borda); border-radius:12px;
+    padding:16px; display:grid; gap:12px;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  }
+  form.cadastro .campo{display:flex; flex-direction:column; gap:4px}
+  form.cadastro .campo.largo{grid-column:1/-1}
+  form.cadastro label{font-size:.82rem; color:var(--muted); font-weight:600}
+  form.cadastro input, form.cadastro textarea{
+    padding:10px; border:1px solid var(--borda); border-radius:8px;
+    background:var(--bg); color:var(--texto); font-size:.95rem; font-family:inherit;
+  }
+  form.cadastro textarea{resize:vertical; min-height:64px}
+  form.cadastro input:focus, form.cadastro textarea:focus,
+  .barra-busca input:focus{outline:2px solid var(--accent); outline-offset:1px}
+  .form-acoes{grid-column:1/-1; display:flex; gap:10px; flex-wrap:wrap}
+  .btn{
+    padding:11px 22px; border-radius:10px; border:none; cursor:pointer;
+    font-size:.95rem; font-weight:600;
+  }
+  .btn.principal{background:var(--accent); color:#fff}
+  .btn.principal:hover{background:var(--accent-forte)}
+  .btn.secundario{background:transparent; color:var(--muted); border:1px solid var(--borda)}
+  .btn.perigo{background:transparent; color:var(--perigo); border:1px solid var(--perigo)}
+  .dica{grid-column:1/-1; font-size:.8rem; color:var(--muted)}
+
+  /* ------ dados ------ */
+  .bloco{
+    background:var(--card); border:1px solid var(--borda); border-radius:12px;
+    padding:16px; margin-bottom:14px;
+  }
+  .bloco h3{margin:0 0 6px; font-size:1rem}
+  .bloco p{margin:4px 0 12px; font-size:.87rem; color:var(--muted)}
+  .bloco code{background:var(--chip); padding:1px 6px; border-radius:5px; font-size:.8rem}
+
+  footer{
+    position:fixed; bottom:0; left:0; right:0;
+    background:var(--card); border-top:1px solid var(--borda);
+    padding:8px 16px; font-size:.8rem; color:var(--muted); text-align:center;
+  }
+  #toast{
+    position:fixed; bottom:56px; left:50%; transform:translateX(-50%);
+    background:var(--texto); color:var(--bg); padding:10px 20px;
+    border-radius:10px; font-size:.9rem; box-shadow:var(--sombra);
+    opacity:0; pointer-events:none; transition:opacity .25s; z-index:10;
+    max-width:90vw;
+  }
+  #toast.mostrar{opacity:1}
+  #toast.erro{background:var(--perigo); color:#fff}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Catálogo de Materiais</h1>
+  <div class="sub">Códigos SAP · Referências cruzadas · Tudo em um só lugar</div>
+</header>
+
+<nav class="tabs">
+  <button data-tab="buscar" class="ativa">🔍 Buscar</button>
+  <button data-tab="cadastrar">➕ Cadastrar</button>
+  <button data-tab="dados">⇅ Importar / Exportar</button>
+</nav>
+
+<main>
+
+  <!-- ================= BUSCAR ================= -->
+  <section id="tab-buscar" class="painel ativa">
+    <div class="barra-busca">
+      <input type="search" id="busca" autocomplete="off"
+             placeholder="Busque por código SAP, referência, descrição, equipamento…">
+      <select id="filtro-categoria"><option value="">Todas as categorias</option></select>
+      <select id="filtro-fabricante"><option value="">Todos os fabricantes</option></select>
+    </div>
+    <div class="contagem" id="contagem"></div>
+    <div class="cards" id="resultados"></div>
+    <button class="btn secundario mais" id="btn-mais" hidden>Mostrar mais resultados</button>
+  </section>
+
+  <!-- ================= CADASTRAR ================= -->
+  <section id="tab-cadastrar" class="painel">
+    <form class="cadastro" id="form-material" autocomplete="off">
+      <div class="campo">
+        <label for="f-sap">Código SAP</label>
+        <input id="f-sap" placeholder="ex.: 11045873" inputmode="numeric">
+      </div>
+      <div class="campo">
+        <label for="f-categoria">Categoria</label>
+        <input id="f-categoria" list="lista-categorias" placeholder="ex.: Filtro">
+        <datalist id="lista-categorias">
+          <option>Filtro</option><option>Rolamento</option><option>Correia</option>
+          <option>Vedação / Retentor</option><option>Mangueira</option>
+          <option>Elétrico</option><option>Hidráulico</option><option>Pneumático</option>
+          <option>Lubrificante</option><option>Fixação / Parafuso</option>
+          <option>Solda</option><option>EPI</option><option>Ferramenta</option>
+          <option>Instrumentação</option><option>Outros</option>
+        </datalist>
+      </div>
+      <div class="campo">
+        <label for="f-unidade">Unidade</label>
+        <input id="f-unidade" list="lista-unidades" placeholder="ex.: UN">
+        <datalist id="lista-unidades">
+          <option>UN</option><option>PC</option><option>CJ</option><option>PAR</option>
+          <option>M</option><option>M2</option><option>M3</option><option>L</option>
+          <option>KG</option><option>RL</option><option>CX</option>
+        </datalist>
+      </div>
+      <div class="campo largo">
+        <label for="f-descricao">Descrição *</label>
+        <input id="f-descricao" required placeholder="ex.: FILTRO ÓLEO LUBRIFICANTE MOTOR">
+      </div>
+      <div class="campo">
+        <label for="f-fabricante">Fabricante / Marca</label>
+        <input id="f-fabricante" placeholder="ex.: MANN">
+      </div>
+      <div class="campo">
+        <label for="f-localizacao">Localização (depósito / prateleira)</label>
+        <input id="f-localizacao" placeholder="ex.: Almox Central · Rua C · Prat. 12">
+      </div>
+      <div class="campo largo">
+        <label for="f-referencias">Referências / códigos equivalentes (um por linha ou separados por ;)</label>
+        <textarea id="f-referencias" placeholder="MANN W950/7&#10;DONALDSON P550425&#10;TECFIL PSL55"></textarea>
+      </div>
+      <div class="campo largo">
+        <label for="f-aplicacao">Aplicação / Equipamento</label>
+        <input id="f-aplicacao" placeholder="ex.: Caminhão VW 26.280 · Frota canavieira · Moenda 2">
+      </div>
+      <div class="campo largo">
+        <label for="f-obs">Observações</label>
+        <textarea id="f-obs" placeholder="ex.: trocar a cada 250 h; comprar sempre em par"></textarea>
+      </div>
+      <div class="form-acoes">
+        <button type="submit" class="btn principal" id="btn-salvar">Salvar material</button>
+        <button type="button" class="btn secundario" id="btn-cancelar" hidden>Cancelar edição</button>
+      </div>
+      <div class="dica">* Somente a descrição é obrigatória — dá para cadastrar agora e completar o código SAP depois.</div>
+    </form>
+  </section>
+
+  <!-- ================= IMPORTAR / EXPORTAR ================= -->
+  <section id="tab-dados" class="painel">
+    <div class="bloco">
+      <h3>📥 Importar planilha (CSV)</h3>
+      <p>Aceita arquivos exportados do Excel/Google Planilhas ou gerados pelo raspador do Catálogo Expresso.
+         Colunas reconhecidas: <code>codigo_sap</code>, <code>descricao</code>, <code>fabricante</code>,
+         <code>categoria</code>, <code>unidade</code>, <code>referencias</code>, <code>aplicacao</code>,
+         <code>localizacao</code>, <code>observacoes</code>.
+         Materiais com o mesmo código SAP são atualizados (as referências são somadas), os demais são adicionados.</p>
+      <input type="file" id="arquivo-csv" accept=".csv,text/csv">
+    </div>
+    <div class="bloco">
+      <h3>📤 Exportar</h3>
+      <p>Gere um CSV para abrir no Excel ou um backup completo em JSON. <b>Exporte com frequência</b> —
+         os dados ficam salvos apenas neste navegador.</p>
+      <button class="btn principal" id="btn-exportar-csv">Exportar CSV (Excel)</button>
+      <button class="btn secundario" id="btn-exportar-json">Backup JSON</button>
+    </div>
+    <div class="bloco">
+      <h3>♻️ Restaurar backup JSON</h3>
+      <p>Substitui todos os materiais atuais pelo conteúdo do arquivo de backup.</p>
+      <input type="file" id="arquivo-json" accept=".json,application/json">
+    </div>
+    <div class="bloco">
+      <h3>🗑️ Apagar tudo</h3>
+      <p>Remove todos os materiais deste navegador. Faça um backup antes!</p>
+      <button class="btn perigo" id="btn-apagar-tudo">Apagar todos os materiais</button>
+    </div>
+  </section>
+
+</main>
+
+<footer id="rodape"></footer>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ============================================================
+   Catálogo de Materiais — códigos SAP e referências cruzadas
+   Dados salvos em localStorage; backup via CSV/JSON.
+   ============================================================ */
+
+const LS_KEY = 'catalogoMateriais.v1';
+const PAGINA = 120;                 // resultados renderizados por vez
+
+let materiais = carregar();
+let editId = null;                  // id do material em edição (ou null)
+let limiteRender = PAGINA;
+
+/* ---------- persistência ---------- */
+function carregar(){
+  try{
+    const bruto = localStorage.getItem(LS_KEY);
+    if(!bruto) return [];
+    const dados = JSON.parse(bruto);
+    return Array.isArray(dados) ? dados : (Array.isArray(dados.materiais) ? dados.materiais : []);
+  }catch(e){
+    console.error('Falha ao carregar dados:', e);
+    return [];
+  }
+}
+function persistir(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(materiais));
+  }catch(e){
+    toast('Não foi possível salvar no navegador: ' + e.message, true);
+  }
+  preencherFiltros();
+  renderResultados();
+  atualizarRodape();
+}
+
+/* ---------- normalização e busca ---------- */
+const norm  = s => (s ?? '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const alnum = s => norm(s).replace(/[^a-z0-9]/g, '');
+
+function blobDe(m){
+  const campos = [m.sap, m.descricao, m.fabricante, m.categoria, m.unidade,
+                  m.aplicacao, m.localizacao, m.obs, ...(m.referencias || [])];
+  const texto = campos.map(norm).join(' ');
+  const codigos = [m.sap, ...(m.referencias || [])].map(alnum).join(' ');
+  return texto + ' ' + codigos;
+}
+
+function pontuacao(m, tokens){
+  // prioriza acertos exatos de código SAP ou de referência
+  let p = 0;
+  const sapA = alnum(m.sap);
+  const refsA = (m.referencias || []).map(alnum);
+  for(const t of tokens){
+    const tA = alnum(t);
+    if(!tA) continue;
+    if(sapA && sapA === tA) p += 100;
+    else if(refsA.includes(tA)) p += 50;
+    else if(sapA && sapA.startsWith(tA)) p += 10;
+    else if(refsA.some(r => r.startsWith(tA))) p += 5;
+  }
+  return p;
+}
+
+function filtrar(){
+  const q = document.getElementById('busca').value.trim();
+  const cat = document.getElementById('filtro-categoria').value;
+  const fab = document.getElementById('filtro-fabricante').value;
+  const tokens = q ? q.split(/\s+/) : [];
+
+  let lista = materiais.filter(m => {
+    if(cat && norm(m.categoria) !== norm(cat)) return false;
+    if(fab && norm(m.fabricante) !== norm(fab)) return false;
+    if(!tokens.length) return true;
+    const blob = blobDe(m);
+    return tokens.every(t => blob.includes(norm(t)) || (alnum(t) && blob.includes(alnum(t))));
+  });
+
+  if(tokens.length){
+    lista = lista
+      .map(m => [pontuacao(m, tokens), m])
+      .sort((a, b) => b[0] - a[0] || norm(a[1].descricao).localeCompare(norm(b[1].descricao)))
+      .map(par => par[1]);
+  }else{
+    lista = lista.slice().sort((a, b) => norm(a.descricao).localeCompare(norm(b.descricao)));
+  }
+  return lista;
+}
+
+/* ---------- renderização ---------- */
+const esc = s => (s ?? '').toString()
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+function cardHTML(m){
+  const refs = (m.referencias || [])
+    .map(r => `<span class="chip">${esc(r)}</span>`).join('');
+  return `
+  <div class="card" data-id="${esc(m.id)}">
+    <div class="card-top">
+      ${m.sap
+        ? `<span class="sap">${esc(m.sap)}</span>
+           <button class="copy" data-acao="copiar" title="Copiar código SAP">📋 copiar</button>`
+        : `<span class="sap vazio">sem código SAP</span>`}
+      ${m.categoria ? `<span class="badge">${esc(m.categoria)}</span>` : ''}
+    </div>
+    <div class="desc">${esc(m.descricao)}</div>
+    ${(m.fabricante || m.unidade)
+      ? `<div class="meta">${esc([m.fabricante, m.unidade && ('Unid: ' + m.unidade)].filter(Boolean).join(' · '))}</div>` : ''}
+    ${refs ? `<div class="refs">${refs}</div>` : ''}
+    ${m.aplicacao ? `<div class="linha"><b>Aplicação:</b> ${esc(m.aplicacao)}</div>` : ''}
+    ${m.localizacao ? `<div class="linha"><b>Local:</b> ${esc(m.localizacao)}</div>` : ''}
+    ${m.obs ? `<div class="linha"><b>Obs:</b> ${esc(m.obs)}</div>` : ''}
+    <div class="acoes">
+      <button data-acao="editar">✏️ Editar</button>
+      <button data-acao="excluir" class="excluir">🗑️ Excluir</button>
+    </div>
+  </div>`;
+}
+
+function renderResultados(){
+  const lista = filtrar();
+  const alvo = document.getElementById('resultados');
+  const contagem = document.getElementById('contagem');
+  const btnMais = document.getElementById('btn-mais');
+
+  if(!materiais.length){
+    contagem.textContent = '';
+    alvo.innerHTML = `<div class="vazio-msg" style="grid-column:1/-1">
+      Nenhum material cadastrado ainda.<br>
+      Use a aba <b>➕ Cadastrar</b> ou importe uma planilha em <b>⇅ Importar / Exportar</b>.</div>`;
+    btnMais.hidden = true;
+    return;
+  }
+
+  contagem.textContent = lista.length === materiais.length
+    ? `${lista.length} materiais`
+    : `${lista.length} de ${materiais.length} materiais`;
+
+  if(!lista.length){
+    alvo.innerHTML = `<div class="vazio-msg" style="grid-column:1/-1">Nada encontrado. Tente parte do código ou outra palavra.</div>`;
+    btnMais.hidden = true;
+    return;
+  }
+
+  alvo.innerHTML = lista.slice(0, limiteRender).map(cardHTML).join('');
+  btnMais.hidden = lista.length <= limiteRender;
+}
+
+function preencherFiltros(){
+  const preencher = (id, valores, rotulo) => {
+    const sel = document.getElementById(id);
+    const atual = sel.value;
+    sel.innerHTML = `<option value="">${rotulo}</option>` +
+      valores.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+    if(valores.some(v => v === atual)) sel.value = atual;
+  };
+  const unicos = campo => [...new Set(materiais.map(m => (m[campo] || '').trim()).filter(Boolean))]
+    .sort((a, b) => norm(a).localeCompare(norm(b)));
+  preencher('filtro-categoria', unicos('categoria'), 'Todas as categorias');
+  preencher('filtro-fabricante', unicos('fabricante'), 'Todos os fabricantes');
+}
+
+function atualizarRodape(){
+  document.getElementById('rodape').textContent =
+    `${materiais.length} materiais · dados salvos neste navegador · faça backups em “Importar / Exportar”`;
+}
+
+/* ---------- formulário ---------- */
+function lerReferencias(texto){
+  return [...new Set(texto.split(/[\n;]+/).map(s => s.trim()).filter(Boolean))];
+}
+
+function coletarForm(){
+  return {
+    sap:         document.getElementById('f-sap').value.trim(),
+    descricao:   document.getElementById('f-descricao').value.trim(),
+    fabricante:  document.getElementById('f-fabricante').value.trim(),
+    categoria:   document.getElementById('f-categoria').value.trim(),
+    unidade:     document.getElementById('f-unidade').value.trim().toUpperCase(),
+    referencias: lerReferencias(document.getElementById('f-referencias').value),
+    aplicacao:   document.getElementById('f-aplicacao').value.trim(),
+    localizacao: document.getElementById('f-localizacao').value.trim(),
+    obs:         document.getElementById('f-obs').value.trim(),
+  };
+}
+
+function limparForm(){
+  document.getElementById('form-material').reset();
+  editId = null;
+  document.getElementById('btn-salvar').textContent = 'Salvar material';
+  document.getElementById('btn-cancelar').hidden = true;
+}
+
+function novoId(){
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+}
+
+function salvarMaterial(ev){
+  ev.preventDefault();
+  const dados = coletarForm();
+  if(!dados.descricao){ toast('Informe pelo menos a descrição.', true); return; }
+
+  if(dados.sap){
+    const dup = materiais.find(m => m.id !== editId && alnum(m.sap) && alnum(m.sap) === alnum(dados.sap));
+    if(dup && !confirm(`Já existe um material com o SAP ${dup.sap}:\n“${dup.descricao}”.\n\nCadastrar mesmo assim?`)) return;
+  }
+
+  const agora = new Date().toISOString();
+  if(editId){
+    const m = materiais.find(x => x.id === editId);
+    if(m) Object.assign(m, dados, { atualizadoEm: agora });
+    toast('Material atualizado ✔');
+  }else{
+    materiais.push(Object.assign({ id: novoId(), criadoEm: agora, atualizadoEm: agora }, dados));
+    toast('Material cadastrado ✔');
+  }
+  persistir();
+  limparForm();
+  document.getElementById('f-sap').focus();
+}
+
+function editarMaterial(id){
+  const m = materiais.find(x => x.id === id);
+  if(!m) return;
+  editId = id;
+  document.getElementById('f-sap').value = m.sap || '';
+  document.getElementById('f-descricao').value = m.descricao || '';
+  document.getElementById('f-fabricante').value = m.fabricante || '';
+  document.getElementById('f-categoria').value = m.categoria || '';
+  document.getElementById('f-unidade').value = m.unidade || '';
+  document.getElementById('f-referencias').value = (m.referencias || []).join('\n');
+  document.getElementById('f-aplicacao').value = m.aplicacao || '';
+  document.getElementById('f-localizacao').value = m.localizacao || '';
+  document.getElementById('f-obs').value = m.obs || '';
+  document.getElementById('btn-salvar').textContent = 'Salvar alterações';
+  document.getElementById('btn-cancelar').hidden = false;
+  abrirTab('cadastrar');
+  document.getElementById('f-descricao').focus();
+}
+
+function excluirMaterial(id){
+  const m = materiais.find(x => x.id === id);
+  if(!m) return;
+  if(!confirm(`Excluir “${m.descricao}”${m.sap ? ' (SAP ' + m.sap + ')' : ''}?`)) return;
+  materiais = materiais.filter(x => x.id !== id);
+  persistir();
+  toast('Material excluído.');
+}
+
+/* ---------- CSV ---------- */
+function detectarDelimitador(linha){
+  const conta = c => (linha.match(new RegExp('\\' + c, 'g')) || []).length;
+  const pv = conta(';'), vg = conta(','), tab = conta('\t');
+  if(tab >= pv && tab >= vg) return '\t';
+  return pv >= vg ? ';' : ',';
+}
+
+function parseCSV(texto){
+  texto = texto.replace(/^\uFEFF/, '');
+  const delim = detectarDelimitador(texto.split(/\r?\n/, 1)[0] || '');
+  const linhas = []; let campo = '', linha = [], aspas = false;
+  for(let i = 0; i < texto.length; i++){
+    const c = texto[i];
+    if(aspas){
+      if(c === '"'){
+        if(texto[i + 1] === '"'){ campo += '"'; i++; }
+        else aspas = false;
+      }else campo += c;
+    }else if(c === '"'){ aspas = true; }
+    else if(c === delim){ linha.push(campo); campo = ''; }
+    else if(c === '\n' || c === '\r'){
+      if(c === '\r' && texto[i + 1] === '\n') i++;
+      linha.push(campo); campo = '';
+      if(linha.some(x => x.trim() !== '')) linhas.push(linha);
+      linha = [];
+    }else campo += c;
+  }
+  linha.push(campo);
+  if(linha.some(x => x.trim() !== '')) linhas.push(linha);
+  return linhas;
+}
+
+const ALIAS_COLUNAS = {
+  sap:         ['codigo_sap','codigo sap','cod_sap','cod sap','sap','material','no material','n material','numero material','codigo','cod'],
+  descricao:   ['descricao','texto breve','texto breve material','denominacao','nome','produto'],
+  fabricante:  ['fabricante','marca','fornecedor'],
+  categoria:   ['categoria','grupo','grupo de mercadorias','tipo','familia'],
+  unidade:     ['unidade','unidade medida','um','un','unid'],
+  referencias: ['referencias','referencia','refs','ref','codigos equivalentes','equivalencias','cross','cross reference','referencias cruzadas'],
+  aplicacao:   ['aplicacao','equipamento','aplicacao equipamento','onde usa','uso','veiculo'],
+  localizacao: ['localizacao','local','deposito','prateleira','endereco','posicao'],
+  obs:         ['observacoes','observacao','obs','nota','notas','comentario','comentarios'],
+};
+
+function mapearCabecalho(cabecalho){
+  const mapa = {};
+  cabecalho.forEach((nome, i) => {
+    const chaveNorm = norm(nome).replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+    for(const [campo, aliases] of Object.entries(ALIAS_COLUNAS)){
+      if(!(campo in mapa) && aliases.includes(chaveNorm)){ mapa[campo] = i; break; }
+    }
+  });
+  return mapa;
+}
+
+function importarCSV(texto){
+  const linhas = parseCSV(texto);
+  if(linhas.length < 2){ toast('Arquivo vazio ou sem linhas de dados.', true); return; }
+  const mapa = mapearCabecalho(linhas[0]);
+  if(!('descricao' in mapa) && !('sap' in mapa)){
+    toast('Cabeçalho não reconhecido: o CSV precisa de uma coluna “codigo_sap” ou “descricao”.', true);
+    return;
+  }
+
+  const agora = new Date().toISOString();
+  let novos = 0, atualizados = 0, ignorados = 0;
+  const porSap = new Map();
+  materiais.forEach(m => { const k = alnum(m.sap); if(k) porSap.set(k, m); });
+
+  for(const linha of linhas.slice(1)){
+    const pega = campo => (campo in mapa) ? (linha[mapa[campo]] || '').trim() : '';
+    const dados = {
+      sap: pega('sap'), descricao: pega('descricao'), fabricante: pega('fabricante'),
+      categoria: pega('categoria'), unidade: pega('unidade').toUpperCase(),
+      referencias: lerReferencias(pega('referencias')),
+      aplicacao: pega('aplicacao'), localizacao: pega('localizacao'), obs: pega('obs'),
+    };
+    if(!dados.sap && !dados.descricao){ ignorados++; continue; }
+
+    const chave = alnum(dados.sap);
+    const existente = chave ? porSap.get(chave) : null;
+    if(existente){
+      for(const campo of ['descricao','fabricante','categoria','unidade','aplicacao','localizacao','obs']){
+        if(dados[campo]) existente[campo] = dados[campo];
+      }
+      existente.referencias = [...new Set([...(existente.referencias || []), ...dados.referencias])];
+      existente.atualizadoEm = agora;
+      atualizados++;
+    }else{
+      const novo = Object.assign({ id: novoId(), criadoEm: agora, atualizadoEm: agora }, dados);
+      materiais.push(novo);
+      if(chave) porSap.set(chave, novo);
+      novos++;
+    }
+  }
+  persistir();
+  toast(`Importação concluída: ${novos} novos, ${atualizados} atualizados` + (ignorados ? `, ${ignorados} linhas ignoradas` : '') + '.');
+  abrirTab('buscar');
+}
+
+function csvCampo(v){
+  v = (v ?? '').toString();
+  return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+
+function exportarCSV(){
+  if(!materiais.length){ toast('Nada para exportar ainda.', true); return; }
+  const cab = ['codigo_sap','descricao','fabricante','categoria','unidade','referencias','aplicacao','localizacao','observacoes'];
+  const linhas = materiais.map(m => [
+    m.sap, m.descricao, m.fabricante, m.categoria, m.unidade,
+    (m.referencias || []).join('; '), m.aplicacao, m.localizacao, m.obs,
+  ].map(csvCampo).join(';'));
+  const conteudo = '\uFEFF' + cab.join(';') + '\r\n' + linhas.join('\r\n');
+  baixar(conteudo, `catalogo-materiais-${hoje()}.csv`, 'text/csv;charset=utf-8');
+  toast('CSV exportado ✔');
+}
+
+function exportarJSON(){
+  const conteudo = JSON.stringify({
+    app: 'catalogo-materiais', versao: 1,
+    exportadoEm: new Date().toISOString(), materiais,
+  }, null, 1);
+  baixar(conteudo, `catalogo-backup-${hoje()}.json`, 'application/json');
+  toast('Backup JSON exportado ✔');
+}
+
+function restaurarJSON(texto){
+  let dados;
+  try{ dados = JSON.parse(texto); }
+  catch(e){ toast('Arquivo JSON inválido.', true); return; }
+  const lista = Array.isArray(dados) ? dados : dados.materiais;
+  if(!Array.isArray(lista)){ toast('Este arquivo não parece um backup do catálogo.', true); return; }
+  if(!confirm(`Substituir os ${materiais.length} materiais atuais pelos ${lista.length} do backup?`)) return;
+  const agora = new Date().toISOString();
+  materiais = lista.map(m => Object.assign(
+    { id: novoId(), criadoEm: agora, atualizadoEm: agora },
+    m,
+    { referencias: Array.isArray(m.referencias) ? m.referencias : lerReferencias(m.referencias || '') },
+  ));
+  persistir();
+  toast(`Backup restaurado: ${materiais.length} materiais.`);
+  abrirTab('buscar');
+}
+
+function apagarTudo(){
+  if(!materiais.length){ toast('Não há materiais para apagar.', true); return; }
+  const resp = prompt(`Isto apaga TODOS os ${materiais.length} materiais deste navegador.\nDigite APAGAR para confirmar:`);
+  if(resp !== 'APAGAR'){ toast('Operação cancelada.'); return; }
+  materiais = [];
+  persistir();
+  toast('Todos os materiais foram apagados.');
+}
+
+/* ---------- utilidades ---------- */
+function baixar(conteudo, nome, tipo){
+  const blob = new Blob([conteudo], { type: tipo });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+const hoje = () => new Date().toISOString().slice(0, 10);
+
+let toastTimer = null;
+function toast(msg, erro){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.toggle('erro', !!erro);
+  el.classList.add('mostrar');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('mostrar'), erro ? 5000 : 2600);
+}
+
+function copiarSap(sap){
+  const feito = () => toast(`Código ${sap} copiado ✔`);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(sap).then(feito, () => copiarFallback(sap, feito));
+  }else copiarFallback(sap, feito);
+}
+function copiarFallback(texto, feito){
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); feito(); }
+  catch(e){ toast('Não foi possível copiar automaticamente.', true); }
+  ta.remove();
+}
+
+/* ---------- abas e eventos ---------- */
+function abrirTab(nome){
+  document.querySelectorAll('nav.tabs button').forEach(b =>
+    b.classList.toggle('ativa', b.dataset.tab === nome));
+  document.querySelectorAll('section.painel').forEach(s =>
+    s.classList.toggle('ativa', s.id === 'tab-' + nome));
+  if(nome === 'buscar') document.getElementById('busca').focus();
+}
+
+document.querySelectorAll('nav.tabs button').forEach(b =>
+  b.addEventListener('click', () => abrirTab(b.dataset.tab)));
+
+document.getElementById('busca').addEventListener('input', () => { limiteRender = PAGINA; renderResultados(); });
+document.getElementById('filtro-categoria').addEventListener('change', () => { limiteRender = PAGINA; renderResultados(); });
+document.getElementById('filtro-fabricante').addEventListener('change', () => { limiteRender = PAGINA; renderResultados(); });
+document.getElementById('btn-mais').addEventListener('click', () => { limiteRender += PAGINA; renderResultados(); });
+
+document.getElementById('resultados').addEventListener('click', ev => {
+  const btn = ev.target.closest('button[data-acao]');
+  if(!btn) return;
+  const card = btn.closest('.card');
+  const id = card && card.dataset.id;
+  if(btn.dataset.acao === 'copiar'){
+    const m = materiais.find(x => x.id === id);
+    if(m && m.sap) copiarSap(m.sap);
+  }
+  else if(btn.dataset.acao === 'editar') editarMaterial(id);
+  else if(btn.dataset.acao === 'excluir') excluirMaterial(id);
+});
+
+document.getElementById('form-material').addEventListener('submit', salvarMaterial);
+document.getElementById('btn-cancelar').addEventListener('click', () => { limparForm(); abrirTab('buscar'); });
+
+document.getElementById('arquivo-csv').addEventListener('change', ev => {
+  const arq = ev.target.files[0];
+  if(!arq) return;
+  const leitor = new FileReader();
+  leitor.onload = () => { importarCSV(leitor.result); ev.target.value = ''; };
+  leitor.readAsText(arq, 'utf-8');
+});
+document.getElementById('arquivo-json').addEventListener('change', ev => {
+  const arq = ev.target.files[0];
+  if(!arq) return;
+  const leitor = new FileReader();
+  leitor.onload = () => { restaurarJSON(leitor.result); ev.target.value = ''; };
+  leitor.readAsText(arq, 'utf-8');
+});
+document.getElementById('btn-exportar-csv').addEventListener('click', exportarCSV);
+document.getElementById('btn-exportar-json').addEventListener('click', exportarJSON);
+document.getElementById('btn-apagar-tudo').addEventListener('click', apagarTudo);
+
+/* ---------- inicialização ---------- */
+preencherFiltros();
+renderResultados();
+atualizarRodape();
+document.getElementById('busca').focus();
+</script>
+</body>
+</html>
