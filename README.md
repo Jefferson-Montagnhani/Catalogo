@@ -30,7 +30,7 @@ base no Supabase, publicado automaticamente no GitHub Pages:
 **https://jefferson-montagnhani.github.io/Catalogo/**
 
 Salve esse endereço na tela inicial do celular e use como aplicativo. Todo
-push na branch `main` republica o site sozinho (workflow em
+push no repositório republica o site sozinho (workflow em
 `.github/workflows/pages.yml`). Se precisar republicar manualmente: aba
 *Actions* → “Publicar no GitHub Pages” → *Run workflow*.
 
