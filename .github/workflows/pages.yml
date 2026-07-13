@@ -1,8 +1,11 @@
 name: Publicar no GitHub Pages
 
+# O ambiente github-pages só aceita implantações da branch PADRÃO do
+# repositório. Se um dia a branch padrão mudar (ex.: para "main"),
+# troque o nome abaixo.
 on:
   push:
-    branches: [main, claude/material-registry-sap-n028rn]
+    branches: [claude/material-registry-sap-n028rn]
   workflow_dispatch:
 
 permissions:
